@@ -6,6 +6,7 @@
 #include "Camera/CameraComponent.h"
 #include "EnhancedInputComponent.h"
 #include "EnhancedInputSubsystems.h"
+#include "Bullet.h"
 
 // Sets default values
 ATPSCharacter::ATPSCharacter()
@@ -28,6 +29,9 @@ ATPSCharacter::ATPSCharacter()
 	bUseControllerRotationRoll = false;
 
 	JumpMaxCount = 2;
+
+	gunMeshComp = CreateDefaultSubobject<USkeletalMeshComponent>(TEXT("GunMeshComp"));
+	gunMeshComp->SetupAttachment(GetMesh());
 }
 
 // Called when the game starts or when spawned
@@ -67,6 +71,7 @@ void ATPSCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompon
 		enhancedInputComponent->BindAction(iaMouseLook, ETriggerEvent::Triggered, this, &ATPSCharacter::Look);
 		enhancedInputComponent->BindAction(iaJump, ETriggerEvent::Started, this, &ACharacter::Jump);
 		enhancedInputComponent->BindAction(iaJump, ETriggerEvent::Completed, this, &ACharacter::StopJumping);
+		enhancedInputComponent->BindAction(iaFire, ETriggerEvent::Started, this, &ATPSCharacter::InputFire);
 	}
 }
 
@@ -95,4 +100,10 @@ void ATPSCharacter::PlayerMove()
 	*/
 	AddMovementInput(direction);
 	direction = FVector::ZeroVector;
+}
+
+void ATPSCharacter::InputFire(const struct FInputActionValue& inputValue)
+{
+	FTransform firePosition = gunMeshComp->GetSocketTransform(TEXT("FirePosition"));
+	GetWorld()->SpawnActor<ABullet>(bulletFactory, firePosition);
 }

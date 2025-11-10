@@ -33,6 +33,12 @@ public:
 	UPROPERTY(VisibleAnywhere, Category = Camera)
 	class UCameraComponent* tpsCamComp;
 
+	UPROPERTY(VisibleAnywhere, Category = GunMesh)
+	class USkeletalMeshComponent* gunMeshComp;
+
+	UPROPERTY(EditDefaultsOnly, Category = BulletFactory)
+	TSubclassOf<class ABullet> bulletFactory;
+
 	UPROPERTY(EditDefaultsOnly, Category = Input)
 	class UInputMappingContext* imcDefault;
 
@@ -48,6 +54,9 @@ public:
 	UPROPERTY(EditDefaultsOnly, Category = Input)
 	class UInputAction* iaJump;
 
+	UPROPERTY(EditDefaultsOnly, Category = Input)
+	class UInputAction* iaFire;
+
 	UPROPERTY(EditAnywhere, Category = PlayerSetting)
 	float walkSpeed = 600;
 
@@ -56,4 +65,5 @@ public:
 	void Move(const struct FInputActionValue& inputValue);
 	void Look(const struct FInputActionValue& inputValue);
 	void PlayerMove();
+	void InputFire(const struct FInputActionValue& inputValue);
 };
